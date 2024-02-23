@@ -1,16 +1,18 @@
 //server devolve p cliente. e devolve oq vem do 'app.use(routes)'
 require('express-async-errors')
-const database = require('./database/sqlite')
+const migrationsRun = require('./database/sqlite/migrations')
 const appError = require('./utils/appError')
 const express = require('express')
 const routes = require('./routes') //importando routes. quando não passar a pasta que quer utilizar, por padrão vai encontrar o index.js
+
+migrationsRun() //executando banco de dados
+
 
 const app = express() //executando express
 app.use(express.json()) //está executando no insomnia
 
 app.use(routes) //executando routes
 
-database() //executando banco de dados
 
 app.use(( error, request, response, next) => {
     if(error instanceof appError) { //se o erro vem do cliente
