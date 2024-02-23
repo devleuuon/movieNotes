@@ -1,10 +1,10 @@
 const createUsers = `
 CREATE TABLE IF NOT EXISTS users (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-  	nome VARCHAR,
+  	name VARCHAR,
   	email VARCHAR,
   	password VARCHAR,
-  	avatar VARCHAR,
+  	avatar VARCHAR NULL,
   	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
