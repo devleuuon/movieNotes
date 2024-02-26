@@ -41,8 +41,8 @@ class UsersController {
 
         const hashedPassword = await hash(password, 8)
 
-        user.name = name //passando valor atualizado
-        user.email = email
+        user.name = name ?? user.name //passando valor atualizado
+        user.email = email ?? user.password //se o campo ficar vazio ao ser atualizado, vai continuar com a última atualização
         
         if (password && !old_password) { //verifica se usuário não deixou o campo vazio
             throw new appError('Você precisa informar a senha antiga para definir a nova senha')
@@ -68,9 +68,9 @@ class UsersController {
             email = ?,
             password = ?,
             avatar = ?,
-            updated_at = ?
-            WHERE id = ?`,
-            [user.name, user.email, user.password, user.avatar, new Date(), id]
+            updated_at = DATETIME('now')
+            WHERE id = ?`, //banco de dados vai pegar o dia e horário.
+            [user.name, user.email, user.password, user.avatar, id]
             )
 
             return response.json()
