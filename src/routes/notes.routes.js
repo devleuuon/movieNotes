@@ -9,5 +9,6 @@ const notesController = new NotesController()
 
 notesRoutes.post('/:user_id', notesController.create) //userController vai criar o conteúdo e esse usersRoutes vai ser passado no index.
 notesRoutes.get('/:id', notesController.show) //userController vai criar o conteúdo e esse usersRoutes vai ser passado no index.
+notesRoutes.delete('/:id', notesController.delete)
 
 module.exports = notesRoutes
