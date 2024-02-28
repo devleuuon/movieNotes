@@ -53,10 +53,11 @@ class NotesController {
     }
 
     async index(request, response) {
-        const { user_id } = request.query
+        const { user_id, title } = request.query //query vai vir do insomnia
 
         const notes = await knex('movie_notes')
         .where({ user_id })
+        .whereLike('title', `%${title}%`) //mecanismo de pesquisa
         .orderBy('title')
 
         return response.json(notes)
