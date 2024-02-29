@@ -7,6 +7,11 @@ class NotesController {
         const { title, description, rating, tags } = request.body
         const { user_id } = request.params
 
+        if(rating < 1 || rating > 5) {
+            throw new appError('avaliação só é válida de 1 a 5.')
+        }
+
+    
         const [ note_id ] = await knex('movie_notes').insert({
             title,
             description,
@@ -14,9 +19,6 @@ class NotesController {
             user_id
         })
 
-        if(rating < 1 || rating > 5) {
-            throw new appError('avaliação só é válida de 1 a 5.')
-        }
 
 
         const tagsInsert = tags.map(name => {
@@ -53,13 +55,33 @@ class NotesController {
     }
 
     async index(request, response) {
-        const { user_id, title } = request.query //query vai vir do insomnia
+        const { user_id, title, tags } = request.query //query vai vir do insomnia
 
-        const notes = await knex('movie_notes')
-        .where({ user_id })
-        .whereLike('title', `%${title}%`) //mecanismo de pesquisa
-        .orderBy('title')
+        let notes
 
+        if (tags) {
+            const filterTags = tags.split(',').map(tag => tag.trim())
+      
+         notes = await knex("movie_tags")
+           .select([
+             "movie_notes.id",
+             "movie_notes.title",
+             "movie_notes.user_id",
+           ])
+           .where("movie_notes.user_id", user_id)
+           .whereLike("movie_notes.title", `%${title}%`)
+           .whereIn("name", filterTags)
+           .innerJoin("movie_notes", "movie_notes.id", "movie_tags.note_id")
+           .orderBy("movie_notes.title")
+
+        } else {
+            notes = await knex('movie_notes')
+            .where({ user_id })
+            .whereLike('title', `%${title}%`) //mecanismo de pesquisa, no insomia digitar parâmetros
+            .orderBy('title')
+    
+        }
+        
         return response.json(notes)
     }
 }
