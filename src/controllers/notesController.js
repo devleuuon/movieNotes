@@ -5,7 +5,7 @@ const appError = require('../utils/appError')
 class NotesController {
     async create(request, response){
         const { title, description, rating, tags } = request.body
-        const { user_id } = request.params
+        const user_id = request.user.id
 
         if(rating < 1 || rating > 5) {
             throw new appError('avaliação só é válida de 1 a 5.')
@@ -55,7 +55,9 @@ class NotesController {
     }
 
     async index(request, response) {
-        const { user_id, title, tags } = request.query //query vai vir do insomnia
+        const { title, tags } = request.query //query vai vir do insomnia
+
+        const user_id = request.id
 
         let notes
 
