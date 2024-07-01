@@ -5,11 +5,13 @@ const appError = require('./utils/appError')
 const express = require('express')
 const routes = require('./routes') //importando routes. quando não passar a pasta que quer utilizar, por padrão vai encontrar o index.js
 const uploadConfig = require('./configs/upload')
+const cors = require('cors')
 
 migrationsRun() //executando banco de dados
 
 
 const app = express() //executando express
+app.use(cors())
 app.use(express.json()) //está executando no insomnia
 
 app.use(routes) //executando routes
