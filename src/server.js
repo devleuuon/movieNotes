@@ -4,15 +4,13 @@ const migrationsRun = require('./database/sqlite/migrations')
 const appError = require('./utils/appError')
 const express = require('express')
 const routes = require('./routes') //importando routes. quando não passar a pasta que quer utilizar, por padrão vai encontrar o index.js
-const cors = require('cors')
-const uploadConfig = require('./configs/upload.js')
+const uploadConfig = require('./configs/upload')
 
 migrationsRun() //executando banco de dados
 
 
 const app = express() //executando express
 app.use(express.json()) //está executando no insomnia
-app.use(cors()) // vai conectar o front ao back.
 
 app.use(routes) //executando routes
 app.use('/files', express.static(uploadConfig.UPLOADS_FOLDER)) //vai mostrar imagem no insomnia.

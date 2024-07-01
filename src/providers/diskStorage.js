@@ -16,7 +16,7 @@ class DiskStorage {
         const filePath = path.resolve(uploadConfig.UPLOADS_FOLDER, file) //buscando arquivo para deletar.
 
         try { //vai verificar o status do arquivo, se ele existe ou tem algum problema
-            await fs.promises.stat(filePath)
+            await fs.promises.stat(filePath) // stat -> retorna o status do arquivo.
         } catch { //se houver algum erro vai retornar.
             return
         }

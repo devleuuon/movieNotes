@@ -5,7 +5,7 @@ const { hash, compare } = require('bcryptjs') //criptografia da senha
 
 class UsersController {
      async create(request, response) {
-        const { name, email, password, avatar } = request.body
+        const { name, email, password } = request.body
 
         const database = await sqliteConnection() //await para se conectar com banco de dados, pois nem sempre ele vai conectar no mesmo tempo.
         const checkUserExists = await database.get('SELECT * FROM users WHERE email = (?)', [email])
@@ -16,18 +16,18 @@ class UsersController {
 
         const hashedPassword = await hash(password, 8) //8 é o fator de complexidade
 
-        await database.run('INSERT INTO users (name, email, password, avatar) VALUES (?, ?, ?, ?)',
-        [ name, email, hashedPassword, avatar ]) //inserir elementos do insomnia para o banco de dados.
+        await database.run('INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+        [ name, email, hashedPassword ]) //inserir elementos do insomnia para o banco de dados.
 
         return response.status(201).json()
     }
 
     async update(request, response) {
-        const { name, email, password, old_password, avatar} = request.body
+        const { name, email, password, old_password} = request.body
         const user_id = request.user.id
 
         const database = await sqliteConnection()
-        const user = await database.get('SELECT * FROM users WHERE id = (?)', [user_id])
+        const user = await database.get('SELECT * FROM users WHERE id = (?)', user_id)
 
         if(!user) { //se não existir
             throw new appError('Usuário não existe.')
@@ -59,7 +59,6 @@ class UsersController {
         }
         
         user.password = hashedPassword
-        user.avatar = avatar
         
         
         await database.run(`
@@ -67,10 +66,9 @@ class UsersController {
             name = ?,
             email = ?,
             password = ?,
-            avatar = ?,
             updated_at = DATETIME('now')
             WHERE id = ?`, //banco de dados vai pegar o dia e horário.
-            [user.name, user.email, user.password, user.avatar, user_id]
+            [user.name, user.email, user.password, user_id]
             )
 
             return response.json()
