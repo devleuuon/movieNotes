@@ -1,4 +1,3 @@
-const { request, response } = require('express')
 const knex = require('../database/knex')
 const appError = require('../utils/appError')
 
@@ -7,9 +6,9 @@ class NotesController {
         const { title, description, rating, tags } = request.body
         const user_id = request.user.id
 
-        if(rating < 1 || rating > 5) {
-            throw new appError('avaliação só é válida de 1 a 5.')
-        }
+        // if(rating < 1 || rating > 5) {
+        //     throw new appError('avaliação só é válida de 1 a 5.')
+        // }
 
     
         const [ note_id ] = await knex('movie_notes').insert({
